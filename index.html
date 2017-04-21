@@ -7,8 +7,20 @@
   <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
   <link rel="stylesheet" href="/resources/demos/style.css">
   <style>
-  ul { list-style-type: none; margin: 0; padding: 0; margin-bottom: 10px; text-align: center; }
-  li { margin: 5px; padding: 5px; width: 150px; }
+  ul { 
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      margin-bottom: 10px;
+      text-align: center;
+  }
+  li { 
+      margin: 5px;
+      padding: 5px;
+      width: 150px;
+      background-color: white;
+      border: 1px solid black;
+  }
   </style>
   <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
@@ -35,13 +47,10 @@
 <th style="background-color: #5b85e5"> In progress </th>
 <th style="background-color: #6eea60"> Done </th>
 <tr>
+
 <tr>
-<td>
+<td class="sortable">
 <ul class="sortable" id='low-priority' >
-  <li class="draggable">Item 2</li>
-  <li class="draggable">Item 3</li>
-  <li class="draggable">Item 4</li>
-  <li class="draggable">Item 5</li>
 </ul>
 </td>
 
@@ -55,7 +64,7 @@
 
 </td>
 
-<td>
+<td class="sortable">
 <ul class="sortable" id='hight-priority'>
   <li class="draggable">Item 2</li>
   <li class="draggable">Item 3</li>
@@ -65,7 +74,7 @@
  
 </td>
 
-<td>
+<td class="sortable">
 <ul class="sortable" id='inprogress'>
   <li class="draggable">Item 2</li>
   <li class="draggable">Item 3</li>
@@ -75,7 +84,7 @@
 
 </td>
 
-<td>
+<td class="sortable">
 <ul class="sortable" id='done'>
   <li class="draggable">Item 2</li>
   <li class="draggable">Item 3</li>

@@ -10,6 +10,13 @@ from redis import Redis
 redis = Redis()
 token = get_token()
 
+class Columns(object):
+    LOW_PRIORITY = "low-priority"
+    HIGH_PRIORITY = "high-priority"
+    INBOX = "inbox"
+    IN_PROGRESS = "inprogress"
+    DONE = "done"
+
 class Issue(object):
     def __init__(self, id, title, body, repository):
         self.id=id
@@ -58,16 +65,22 @@ def index():
     inbox_issues = getIssues('inbox')
 
     board = (
-        ("low-priority", []),
-        ('inbox', inbox_issues),
-        ('high-priority', []),
-        ('inprogress', []),
-        ('done', []),
+        (Columns.LOW_PRIORITY, getIssues(Columns.LOW_PRIORITY)),
+        (Columns.INBOX, getIssues(Columns.INBOX)),
+        (Columns.HIGH_PRIORITY, getIssues(Columns.HIGH_PRIORITY)),
+        (Columns.IN_PROGRESS, getIssues(Columns.IN_PROGRESS)),
+        (Columns.DONE, getIssues(Columns.DONE)),
     )
 
     return render_template('index.html', board=board)
 
+
 @app.route('/move_issue', methods=['GET', 'POST'])
 def move_issue():
-    col = request.form['position']
-    return col
+    column = request.form['column']
+    issue = request.form['issue']
+    position_before = request.form['position_before']
+    redis.lrem(column, issue)
+    redis.linsert(column, 'before', position_before, issue)
+
+    return "Success"

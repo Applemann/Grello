@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>jQuery UI Draggable + Sortable</title>
   <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-  <link rel="stylesheet" href="/resources/demos/style.css">
   <style>
   ul { 
       list-style-type: none;
@@ -47,7 +46,7 @@
             if (thisId == undefined) { ret = true; }
         });
 
-        if (retId == issueId) { retId = "None" }
+        if (retId == issueId) { retId = "" }
         return retId;
      
      }
@@ -63,10 +62,7 @@
            type: "POST",
            url: "/move_issue",
            data: dataString, 
-           success: function(data)
-           {
-               alert(data); // show response from the php script.
-           }
+           success: function(data) { }
         });
     return true;
     }

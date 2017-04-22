@@ -32,18 +32,32 @@
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
   <script>
 
-     function updatePosition(self) {
+     function getPositionBefore(self, issueId) {
+        var ret = false;
+        var thisId = "";
+        retId = ''
 
-        var html = self.parent().find('li').length;
-        alert(html);
+        var html = self.parent().find('li').each(function (index, element) {
+            thisId = $( this ).attr('id');
+            if (ret == true) {
+                retId=thisId;
+                ret = false;
+            }
+
+            if (thisId == undefined) { ret = true; }
+        });
+
+        if (retId == issueId) { retId = "None" }
+        return retId;
      
      }
 
      function moveIssue() {
         var issueId = $(this).attr('id');
         var columnId = $(this).parent().attr('id');
-        var position = updatePosition($(this))
-        var dataString = 'issue='+ issueId + '&column=' + columnId + '&position=' + position;
+        var position_before = getPositionBefore($(this), issueId)
+
+        var dataString = 'issue='+ issueId + '&column=' + columnId + '&position_before=' + position_before;
 
         $.ajax({
            type: "POST",
@@ -51,7 +65,7 @@
            data: dataString, 
            success: function(data)
            {
-               //alert(data); // show response from the php script.
+               alert(data); // show response from the php script.
            }
         });
     return true;

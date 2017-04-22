@@ -17,7 +17,7 @@
   li { 
       margin: 5px;
       padding: 5px;
-      width: 150px;
+      width: 200px;
       background-color: white;
       border: 1px solid black;
   }
@@ -48,7 +48,7 @@
 <th style="background-color: #6eea60"> Done </th>
 </tr>
 <tr>
-{% for name, column in board.iteritems() %}
+{% for name, column in board %}
     <td class="sortable">
         <ul class="sortable" id='{{ name }}' >
 

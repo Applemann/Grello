@@ -46,57 +46,18 @@
 <th style="background-color: #e03731"> High priority </th>
 <th style="background-color: #5b85e5"> In progress </th>
 <th style="background-color: #6eea60"> Done </th>
+</tr>
 <tr>
+{% for name, column in board.iteritems() %}
+    <td class="sortable">
+        <ul class="sortable" id='{{ name }}' >
 
-<tr>
-<td class="sortable">
-<ul class="sortable" id='low-priority' >
-  <li class="draggable">Item 2</li>
-  <li class="draggable">Item 3</li>
-  <li class="draggable">Item 4</li>
-  <li class="draggable">Item 5</li>
-</ul>
-</td>
-
-<td>
-<ul class="sortable" id="inbox">
-  <li class="draggable">Item 2</li>
-  <li class="draggable">Item 3</li>
-  <li class="draggable">Item 4</li>
-  <li class="draggable">Item 5</li>
-</ul>
-
-</td>
-
-<td class="sortable">
-<ul class="sortable" id='hight-priority'>
-  <li class="draggable">Item 2</li>
-  <li class="draggable">Item 3</li>
-  <li class="draggable">Item 4</li>
-  <li class="draggable">Item 5</li>
-</ul>
- 
-</td>
-
-<td class="sortable">
-<ul class="sortable" id='inprogress'>
-  <li class="draggable">Item 2</li>
-  <li class="draggable">Item 3</li>
-  <li class="draggable">Item 4</li>
-  <li class="draggable">Item 5</li>
-</ul>
-
-</td>
-
-<td class="sortable">
-<ul class="sortable" id='done'>
-  <li class="draggable">Item 2</li>
-  <li class="draggable">Item 3</li>
-  <li class="draggable">Item 4</li>
-  <li class="draggable">Item 5</li>
-</ul>
-</td>
-
+       {% for row in column %}
+           <li class="draggable">{{ row }}</li>
+       {% endfor %}
+        </ul>
+    </td>
+{% endfor %}
 </tr>
  
 </body>

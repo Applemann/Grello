@@ -12,7 +12,6 @@
       margin: 0;
       padding: 0;
       margin-bottom: 10px;
-      text-align: center;
   }
   li { 
       margin: 5px;
@@ -20,6 +19,10 @@
       width: 200px;
       background-color: white;
       border: 1px solid black;
+      text-align: center;
+  }
+  th {
+      width: 200px;
   }
   </style>
   <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
@@ -52,8 +55,8 @@
     <td class="sortable">
         <ul class="sortable" id='{{ name }}' >
 
-       {% for row in column %}
-           <li class="draggable">{{ row }}</li>
+       {% for issue in column %}
+       <li id="{{ issue.id }}" class="draggable">{{ issue.title }}</li>
        {% endfor %}
         </ul>
     </td>

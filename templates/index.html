@@ -28,13 +28,33 @@
   <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
   <script>
+     function moveIssue() {
+        var issueId = $(this).attr('id');
+        var columnId = $(this).parent().attr('id');
+        var position = 'testpos';
+        var dataString = 'issue='+ issueId + '&column=' + columnId + '&position=' + position;
+
+        $.ajax({
+           type: "POST",
+           url: "/move_issue",
+           data: dataString, 
+           success: function(data)
+           {
+               alert(data); // show response from the php script.
+           }
+        });
+    return true;
+    }
+
+
   $( function() {
     $( ".sortable" ).sortable({
       revert: true
     });
     $( ".draggable" ).draggable({
       connectToSortable: ".sortable",
-      revert: "invalid"
+      revert: "invalid",
+      stop: moveIssue
     });
     $( "ul, li" ).disableSelection();
   } );
@@ -52,7 +72,7 @@
 </tr>
 <tr>
 {% for name, column in board %}
-    <td class="sortable">
+    <td class="sortable" id='{{ name }}'>
         <ul class="sortable" id='{{ name }}' >
 
        {% for issue in column %}

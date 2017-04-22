@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from flask import Flask
-from flask import render_template
+from flask import render_template, request
 import urllib2, json
 import utils
 from utils import get_token, for_print
@@ -32,9 +32,9 @@ def loadAllIssues():
                 )
         
     
-def getIssues(collumn):
+def getIssues(column):
     issues = []
-    issue_ids = redis.lrange(collumn, 0, -1)
+    issue_ids = redis.lrange(column, 0, -1)
 
     for issue_id in issue_ids:
         issue = redis.hgetall(issue_id)
@@ -66,3 +66,8 @@ def index():
     )
 
     return render_template('index.html', board=board)
+
+@app.route('/move_issue', methods=['GET', 'POST'])
+def move_issue():
+    col = request.form['position']
+    return col

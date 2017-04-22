@@ -12,6 +12,9 @@
       margin: 0;
       padding: 0;
       margin-bottom: 10px;
+      width: 222px;
+      height: 1000px;
+      text-align: center;
   }
   li { 
       margin: 5px;
@@ -28,10 +31,18 @@
   <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
   <script>
+
+     function updatePosition(self) {
+
+        var html = self.parent().find('li').length;
+        alert(html);
+     
+     }
+
      function moveIssue() {
         var issueId = $(this).attr('id');
         var columnId = $(this).parent().attr('id');
-        var position = 'testpos';
+        var position = updatePosition($(this))
         var dataString = 'issue='+ issueId + '&column=' + columnId + '&position=' + position;
 
         $.ajax({
@@ -40,7 +51,7 @@
            data: dataString, 
            success: function(data)
            {
-               alert(data); // show response from the php script.
+               //alert(data); // show response from the php script.
            }
         });
     return true;

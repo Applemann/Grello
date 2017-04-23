@@ -17,6 +17,16 @@ class Columns(object):
     IN_PROGRESS = "inprogress"
     DONE = "done"
 
+
+def getColumns():
+    columns = []
+    for key, value in Columns.__dict__.iteritems():
+        if key[0] != '_':
+            columns.append((key, value))
+    return columns
+
+
+
 class Issue(object):
     def __init__(self, id, title, body, repository, url):
         self.id=id
@@ -27,16 +37,38 @@ class Issue(object):
 
 def loadAllIssues():
     response = urllib2.urlopen('https://api.github.com/issues?access_token='+token)
-    issues = json.loads(response.read())
+    api_issues = json.loads(response.read())
+
+    issues = []
+    add_issues = []
+    redis_issues = []
+    for column in getColumns():
+        redis_issues += redis.lrange(column[1], 0, -1)
+
+    for issue in api_issues:
+        issues.append(
+            Issue(
+                str(issue['id']), 
+                issue['title'], 
+                issue['body'], 
+                issue['repository'],
+                issue['url'],
+            ) 
+        )
+
     for issue in issues:
-        redis.rpush("inbox", issue['id'])
-        redis.hmset( issue['id'], 
+        if not issue.id in redis_issues:
+            add_issues.append(issue)
+
+    for issue in add_issues:
+        redis.rpush(Columns.INBOX, issue.id)
+        redis.hmset( issue.id, 
                     {
-                        'id': issue['id'],
-                        'title': issue['title'],
-                        'body': issue['body'],
-                        'repository': issue['repository'],
-                        'url': issue['html_url'],
+                        'id': issue.id,
+                        'title': issue.title,
+                        'body': issue.body,
+                        'repository': issue.repository,
+                        'url': issue.url,
                     }
                 )
         
@@ -60,7 +92,8 @@ def getIssues(column):
     return issues
 
 
-#loadAllIssues()
+#redis.flushdb()
+loadAllIssues()
 app = Flask(__name__)
 
 @app.route('/')
@@ -83,7 +116,7 @@ def move_issue():
     issue = request.form['issue']
     position_before = request.form['position_before']
     redis.lrem(from_column, issue)
-    if (position_before != ''): 
+    if position_before != '': 
         redis.linsert(to_column, 'before', position_before, issue)
     else: 
         redis.rpush(to_column, issue)

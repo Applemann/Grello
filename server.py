@@ -44,11 +44,7 @@ def loadAllIssues():
     for issue in issues:
         if not str(issue['id']) in redis_issues:
             redis.rpush(Columns.INBOX, issue['id'])
-            f = {}
-            for i in IssueFields:
-                f[i] = issue[i]
-
-            redis.hmset( issue['id'], f )
+            redis.hmset( issue['id'], {k: issue[k] for k in IssueFields} )
         
     
 def getIssues(column):
@@ -62,18 +58,20 @@ def getIssues(column):
     return issues
 
 
+
 #redis.flushdb()
 loadAllIssues()
 app = Flask(__name__)
 
 @app.route('/')
 def index():
+    column = lambda x: (x, getIssues(x))
     board = (
-        (Columns.LOW_PRIORITY, getIssues(Columns.LOW_PRIORITY)),
-        (Columns.INBOX, getIssues(Columns.INBOX)),
-        (Columns.HIGH_PRIORITY, getIssues(Columns.HIGH_PRIORITY)),
-        (Columns.IN_PROGRESS, getIssues(Columns.IN_PROGRESS)),
-        (Columns.DONE, getIssues(Columns.DONE)),
+        column(Columns.LOW_PRIORITY),
+        column(Columns.INBOX),
+        column(Columns.HIGH_PRIORITY),
+        column(Columns.IN_PROGRESS),
+        column(Columns.DONE),
     )
 
     return render_template('index.html', board=board)
@@ -85,6 +83,7 @@ def move_issue():
     to_column = request.form['to_column']
     issue = request.form['issue']
     position_before = request.form['position_before']
+
     redis.lrem(from_column, issue)
     if position_before != '': 
         redis.linsert(to_column, 'before', position_before, issue)

@@ -46,17 +46,23 @@
             if (thisId == undefined) { ret = true; }
         });
 
+
         if (retId == issueId) { retId = "" }
         return retId;
      
      }
 
-     function moveIssue() {
-        var issueId = $(this).attr('id');
-        var columnId = $(this).parent().attr('id');
-        var position_before = getPositionBefore($(this), issueId)
+    var fromColumnId = '';
+    function startMoveIssue() {
+        fromColumnId = $(this).parent().attr('id');
+    }
 
-        var dataString = 'issue='+ issueId + '&column=' + columnId + '&position_before=' + position_before;
+     function stopMoveIssue() {
+        var issueId = $(this).attr('id');
+        var toColumnId = $(this).parent().attr('id');
+        var position_before = getPositionBefore($(this), issueId);
+
+        var dataString = 'issue='+ issueId + '&to_column=' + toColumnId + '&from_column=' + fromColumnId + '&position_before=' + position_before;
 
         $.ajax({
            type: "POST",
@@ -75,7 +81,8 @@
     $( ".draggable" ).draggable({
       connectToSortable: ".sortable",
       revert: "invalid",
-      stop: moveIssue
+      start: startMoveIssue,
+      stop: stopMoveIssue
     });
     $( "ul, li" ).disableSelection();
   } );

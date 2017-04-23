@@ -62,8 +62,6 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    inbox_issues = getIssues('inbox')
-
     board = (
         (Columns.LOW_PRIORITY, getIssues(Columns.LOW_PRIORITY)),
         (Columns.INBOX, getIssues(Columns.INBOX)),
@@ -77,10 +75,14 @@ def index():
 
 @app.route('/move_issue', methods=['GET', 'POST'])
 def move_issue():
-    column = request.form['column']
+    from_column = request.form['from_column']
+    to_column = request.form['to_column']
     issue = request.form['issue']
     position_before = request.form['position_before']
-    redis.lrem(column, issue)
-    redis.linsert(column, 'before', position_before, issue)
+    redis.lrem(from_column, issue)
+    if (position_before != ''): 
+        redis.linsert(to_column, 'before', position_before, issue)
+    else: 
+        redis.rpush(to_column, issue)
 
-    return "Success"
+    return from_column + ' ' + to_column

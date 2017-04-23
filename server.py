@@ -26,28 +26,11 @@ def getColumns():
     return columns
 
 
-
+IssueFields = ('id', 'title', 'body', 'repository', 'html_url')
 class Issue(object):
-    def __init__(self, id, title, body, repository, html_url):
-        self.id=id
-        self.title=title
-        self.body=body
-        self.repository=repository
-        self.html_url=html_url
-
-class IssueFields(object):
-    id = 'id'
-    title = 'title'
-    body = 'body'
-    repository = 'repository'
-    html_url = 'html_url'
-
-def getIssueFields():
-    field = []
-    for key, value in IssueFields.__dict__.iteritems():
-        if key[0] != '_':
-            field.append(value)
-    return field
+    def __init__(self, issues):
+        for k, v in issues.iteritems():
+            self.__dict__[k] = v
 
 
 def loadAllIssues():
@@ -62,7 +45,7 @@ def loadAllIssues():
         if not str(issue['id']) in redis_issues:
             redis.rpush(Columns.INBOX, issue['id'])
             f = {}
-            for i in getIssueFields():
+            for i in IssueFields:
                 f[i] = issue[i]
 
             redis.hmset( issue['id'], f )
@@ -74,15 +57,7 @@ def getIssues(column):
 
     for issue_id in issue_ids:
         issue = redis.hgetall(issue_id)
-        issues.append(
-            Issue(
-                issue['id'], 
-                issue['title'], 
-                issue['body'], 
-                issue['repository'],
-                issue['html_url'],
-            ) 
-        )
+        issues.append( Issue(issue) )
 
     return issues
 

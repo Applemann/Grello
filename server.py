@@ -18,11 +18,12 @@ class Columns(object):
     DONE = "done"
 
 class Issue(object):
-    def __init__(self, id, title, body, repository):
+    def __init__(self, id, title, body, repository, url):
         self.id=id
         self.title=title
         self.body=body
         self.repository=repository
+        self.url=url
 
 def loadAllIssues():
     response = urllib2.urlopen('https://api.github.com/issues?access_token='+token)
@@ -35,6 +36,7 @@ def loadAllIssues():
                         'title': issue['title'],
                         'body': issue['body'],
                         'repository': issue['repository'],
+                        'url': issue['html_url'],
                     }
                 )
         
@@ -50,7 +52,8 @@ def getIssues(column):
                 issue['id'], 
                 issue['title'], 
                 issue['body'], 
-                issue['repository']
+                issue['repository'],
+                issue['url'],
             ) 
         )
 

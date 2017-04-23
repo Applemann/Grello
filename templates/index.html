@@ -26,6 +26,11 @@
   th {
       width: 200px;
   }
+  li a {
+      color: black;
+      text-decoration: none;
+  
+  }
   </style>
   <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
@@ -104,7 +109,7 @@
         <ul class="sortable" id='{{ name }}' >
 
        {% for issue in column %}
-       <li id="{{ issue.id }}" class="draggable">{{ issue.title }}</li>
+       <li id="{{ issue.id }}" class="draggable"><a href='{{ issue.url }}'>{{ issue.title }}</a></li>
        {% endfor %}
         </ul>
     </td>

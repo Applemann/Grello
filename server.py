@@ -37,40 +37,24 @@ class Issue(object):
 
 def loadAllIssues():
     response = urllib2.urlopen('https://api.github.com/issues?access_token='+token)
-    api_issues = json.loads(response.read())
+    issues = json.loads(response.read())
 
-    issues = []
-    add_issues = []
     redis_issues = []
     for column in getColumns():
         redis_issues += redis.lrange(column[1], 0, -1)
 
-    for issue in api_issues:
-        issues.append(
-            Issue(
-                str(issue['id']), 
-                issue['title'], 
-                issue['body'], 
-                issue['repository'],
-                issue['url'],
-            ) 
-        )
-
     for issue in issues:
-        if not issue.id in redis_issues:
-            add_issues.append(issue)
-
-    for issue in add_issues:
-        redis.rpush(Columns.INBOX, issue.id)
-        redis.hmset( issue.id, 
-                    {
-                        'id': issue.id,
-                        'title': issue.title,
-                        'body': issue.body,
-                        'repository': issue.repository,
-                        'url': issue.url,
-                    }
-                )
+        if not str(issue['id']) in redis_issues:
+            redis.rpush(Columns.INBOX, issue.id)
+            redis.hmset( issue.id, 
+                        {
+                            'id': issue['id'],
+                            'title': issue['title'],
+                            'body': issue['body'],
+                            'repository': issue['repository'],
+                            'url': issue['html_url'],
+                        }
+                    )
         
     
 def getIssues(column):

@@ -109,7 +109,7 @@
         <ul class="sortable" id='{{ name }}' >
 
        {% for issue in column %}
-       <li id="{{ issue.id }}" class="draggable"><a href='{{ issue.url }}'>{{ issue.title }}</a></li>
+       <li id="{{ issue.id }}" class="draggable"><a href='{{ issue.html_url }}'>{{ issue.title }}</a></li>
        {% endfor %}
         </ul>
     </td>

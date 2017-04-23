@@ -22,18 +22,33 @@ def getColumns():
     columns = []
     for key, value in Columns.__dict__.iteritems():
         if key[0] != '_':
-            columns.append((key, value))
+            columns.append(value)
     return columns
 
 
 
 class Issue(object):
-    def __init__(self, id, title, body, repository, url):
+    def __init__(self, id, title, body, repository, html_url):
         self.id=id
         self.title=title
         self.body=body
         self.repository=repository
-        self.url=url
+        self.html_url=html_url
+
+class IssueFields(object):
+    id = 'id'
+    title = 'title'
+    body = 'body'
+    repository = 'repository'
+    html_url = 'html_url'
+
+def getIssueFields():
+    field = []
+    for key, value in IssueFields.__dict__.iteritems():
+        if key[0] != '_':
+            field.append(value)
+    return field
+
 
 def loadAllIssues():
     response = urllib2.urlopen('https://api.github.com/issues?access_token='+token)
@@ -41,20 +56,16 @@ def loadAllIssues():
 
     redis_issues = []
     for column in getColumns():
-        redis_issues += redis.lrange(column[1], 0, -1)
+        redis_issues += redis.lrange(column, 0, -1)
 
     for issue in issues:
         if not str(issue['id']) in redis_issues:
-            redis.rpush(Columns.INBOX, issue.id)
-            redis.hmset( issue.id, 
-                        {
-                            'id': issue['id'],
-                            'title': issue['title'],
-                            'body': issue['body'],
-                            'repository': issue['repository'],
-                            'url': issue['html_url'],
-                        }
-                    )
+            redis.rpush(Columns.INBOX, issue['id'])
+            f = {}
+            for i in getIssueFields():
+                f[i] = issue[i]
+
+            redis.hmset( issue['id'], f )
         
     
 def getIssues(column):
@@ -69,7 +80,7 @@ def getIssues(column):
                 issue['title'], 
                 issue['body'], 
                 issue['repository'],
-                issue['url'],
+                issue['html_url'],
             ) 
         )
 

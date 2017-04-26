@@ -26,11 +26,27 @@ def getColumns():
     return columns
 
 
-IssueFields = ('id', 'title', 'body', 'repository', 'html_url')
+PROJECTS=('erp', 'docker', 'bwt', 'backend', 'TeamZeus-Ansible', 'soap-bridge', 'teamzeus_frontend_django', 'gridhub', 'draq', 'grello')
+BACKGROUND_COLORS=('#6fd6ed', '#69e571', '#f453e7', '#f4383b', '#f7c53d', '#c95afc', '#d2f243', '#49f4b3', '#083887')
+COLORS=('#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#ffffff')
+
+IssueFields = ('id', 'title', 'body', 'repository', 'html_url', 'repository_url')
 class Issue(object):
     def __init__(self, issues):
         for k, v in issues.iteritems():
             self.__dict__[k] = v
+        self.set_repository()
+        self.set_colors()
+
+    def set_repository(self):
+        self.repository = self.repository_url.split('/')[-1]
+
+    def set_colors(self):
+        for i in range(len(PROJECTS)):
+            if PROJECTS[i] == self.repository:
+                self.background_color = BACKGROUND_COLORS[i]
+                self.color = COLORS[i]
+                
 
 
 def loadAllIssues():

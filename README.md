@@ -1,5 +1,5 @@
 # Grello
-Trello is simple web application for visually github issues.
+Grello is simple web application for visually github issues.
 
 
 # Local setup:

@@ -10,12 +10,23 @@ from redis import Redis
 redis = Redis()
 token = get_token()
 
+class Column(object):
+    def __init__(self, id, label, color, background_color):
+        self.id = id
+        self.label = label
+        self.color = color
+        self.background_color = background_color
+	
+
 class Columns(object):
-    LOW_PRIORITY = "low-priority"
-    HIGH_PRIORITY = "high-priority"
-    INBOX = "inbox"
-    IN_PROGRESS = "inprogress"
-    DONE = "done"
+    LOW_PRIORITY = Column("low-priority", "Low priority", "#000000", "#f7f57e")
+    HIGH_PRIORITY = Column("high-priority", "High priority", "#000000", "#e03731")
+    INBOX = Column("inbox", "Inbox", "#000000", "#ffffff")
+    IN_PROGRESS = Column("inprogress", "In progress", "#000000", "#5b85e5")
+    DONE = Column("done", "Done", "#000000", "#6eea60")
+    DOCKER = Column("docker", "Docker", "#000000", "#0d7720")
+    LATER = Column("later", "Later", "#000000", "#e2a809")
+
 
 
 def getColumns():
@@ -81,11 +92,13 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    column = lambda x: (x, getIssues(x))
+    column = lambda x: (x, getIssues(x.id))
     board = (
-        column(Columns.LOW_PRIORITY),
         column(Columns.INBOX),
+        column(Columns.LOW_PRIORITY),
+        column(Columns.LATER),
         column(Columns.HIGH_PRIORITY),
+        column(Columns.DOCKER),
         column(Columns.IN_PROGRESS),
         column(Columns.DONE),
     )

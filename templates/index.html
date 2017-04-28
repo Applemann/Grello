@@ -97,16 +97,14 @@
  
 <table border=1>
 <tr>
-<th style="background-color: #f7f57e"> Low priority </th>
-<th style="background-color: white"> Inbox </th>
-<th style="background-color: #e03731"> High priority </th>
-<th style="background-color: #5b85e5"> In progress </th>
-<th style="background-color: #6eea60"> Done </th>
+{% for name, column in board %}
+		<th style="background-color: {{ name.background_color }}; color: {{ name.color }}"> {{ name.label }} </th>
+{% endfor %}
 </tr>
 <tr>
 {% for name, column in board %}
-    <td class="sortable" id='{{ name }}'>
-        <ul class="sortable" id='{{ name }}' >
+    <td class="sortable" id='{{ name.id }}'>
+        <ul class="sortable" id='{{ name.id }}' >
 
        {% for issue in column %}
        <li id="{{ issue.id }}" style="background-color: {{ issue.background_color }}; color: {{ issue.color }};" class="draggable"><a href='{{ issue.html_url }}'>{{ issue.title }}</a></li>

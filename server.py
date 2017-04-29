@@ -103,7 +103,11 @@ def index():
         column(Columns.DONE),
     )
 
-    return render_template('index.html', board=board)
+    projects = {}
+    for i in range(len(PROJECTS)-1):
+        projects[PROJECTS[i]] = (COLORS[i], BACKGROUND_COLORS[i])
+
+    return render_template('index.html', board=board, projects=projects)
 
 
 @app.route('/move_issue', methods=['GET', 'POST'])

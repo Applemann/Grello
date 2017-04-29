@@ -6,7 +6,7 @@
   <title>jQuery UI Draggable + Sortable</title>
   <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
   <style>
-  ul { 
+  ul.sortable { 
       list-style-type: none;
       margin: 0;
       padding: 0;
@@ -15,7 +15,7 @@
       height: 1000px;
       text-align: center;
   }
-  li { 
+  li.draggable { 
       margin: 5px;
       padding: 5px;
       width: 200px;
@@ -30,7 +30,21 @@
       color: black;
       text-decoration: none;
   
+  }                 
+  .project_ul {
+			position: absolute; right:20px; top:100px;
+	}
+  .project_li {
+      margin: 5px;
+      list-style-type: none;
+  }                 
+{% for name, color in projects.iteritems() %}
+  li#{{ name }}:before {
+      content: "■"; /* Insert content that looks like bullets */
+      padding-right: 8px;
+      color: {{ color[1] }};
   }
+{% endfor %}
   </style>
   <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
@@ -107,12 +121,18 @@
         <ul class="sortable" id='{{ name.id }}' >
 
        {% for issue in column %}
-       <li id="{{ issue.id }}" style="background-color: {{ issue.background_color }}; color: {{ issue.color }};" class="draggable"><a href='{{ issue.html_url }}'>{{ issue.title }}</a></li>
+					 <li id="{{ issue.id }}" style="background-color: {{ issue.background_color }}; color: {{ issue.color }};" class="draggable"><a href='{{ issue.html_url }}'>{{ issue.title }}</a></li>
        {% endfor %}
         </ul>
     </td>
 {% endfor %}
 </tr>
- 
+
+<ul class="project_ul">
+{% for name, color in projects.iteritems() %}
+    <li class="project_li" id="{{ name }}">{{ name }}</li>
+{% endfor %}
+</ul>
+
 </body>
 </html>

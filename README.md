@@ -23,8 +23,17 @@ virtualenv grello-dev
 source ./grello-dev/bin/activate
 
 pip install -r requirements.txt
+```
 
-flask run --host=0.0.0.0
+setup your token:
+```
+echo "{{ your gitHub auth token }}" > token
+```
+
+
+run server:
+```
+export FLASK_APP=server.py && flask run --host=0.0.0.0
 ```
 
 

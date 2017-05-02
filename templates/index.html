@@ -17,10 +17,8 @@
   }
   li.draggable { 
       margin: 5px;
-      padding: 5px;
       width: 200px;
-      background-color: white;
-      border: 1px solid black;
+      padding: 3px; 
       text-align: center;
   }
   th {
@@ -134,7 +132,10 @@
         <ul class="sortable" id='{{ name.id }}' >
 
        {% for issue in column %}
-					 <li id="{{ issue.id }}" style="background-color: {{ issue.background_color }}; color: {{ issue.color }};" class="draggable"><a href='{{ issue.html_url }}'>{{ issue.title }}</a></li>
+           
+					 <li id="{{ issue.id }}" class="draggable" style='background-color: white; border: 3px solid {{ issue.background_color }}'>
+                <a href='{{ issue.html_url }}' style="padding-left: 5%; padding-right: 5%" > {{ issue.title }} </a>
+           </li>
        {% endfor %}
         </ul>
     </td>

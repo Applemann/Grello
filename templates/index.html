@@ -27,6 +27,7 @@
   li a {
       color: black;
       text-decoration: none;
+      font-size: 17px;
   
   }                 
   .project_ul {
@@ -34,13 +35,14 @@
 	}
   .project_li {
       margin: 5px;
+      padding-right: 40px;
       list-style-type: none;
   }                 
-{% for name, color in projects.iteritems() %}
-  li#{{ name }}:before {
+{% for project in projects %}
+  li#{{ project.id }}:before {
       content: "■"; /* Insert content that looks like bullets */
       padding-right: 8px;
-      color: {{ color[1] }};
+      color: {{ project.border_color }};
   }
 {% endfor %}
   </style>
@@ -133,7 +135,7 @@
 
        {% for issue in column %}
            
-					 <li id="{{ issue.id }}" class="draggable" style='background-color: white; border: 3px solid {{ issue.background_color }}'>
+					 <li id="{{ issue.id }}" class="draggable" style='background-color: {{ issue.project.background_color }}; border: 3px solid {{ issue.project.border_color }}'>
                 <a href='{{ issue.html_url }}' style="padding-left: 5%; padding-right: 5%" > {{ issue.title }} </a>
            </li>
        {% endfor %}
@@ -143,8 +145,8 @@
 </tr>
 
 <ul class="project_ul">
-{% for name, color in projects.iteritems() %}
-    <li class="project_li" id="{{ name }}">{{ name }}</li>
+{% for project in projects %}
+    <li class="project_li" id="{{ project.id }}">{{ project.label }}</li>
 {% endfor %}
 </ul>
 

@@ -10,6 +10,28 @@ from redis import Redis
 redis = Redis()
 token = get_token()
 
+
+class Project(object):
+    def __init__(self, id, label, background_color, border_color):
+        self.id = id
+        self.label = label
+        self.border_color = border_color
+        self.background_color = background_color
+
+PROJECTS = (
+    Project('erp', 'ERP', '#97c3ef', '#0653a0'),
+    Project('docker', 'Docker', '#b7e589', '#195908'),
+    Project('bwt', 'BWT', '#faa4fc', '#a657a8'),
+    Project('backend', 'TZ-Backend', '#000000', '#ffffff'),
+    Project('TeamZeus-Ansible', 'Ansible', '#ef8686', '#aa210d'),
+    Project('soap-bridge', 'Soap-Bridge', '#000000', '#ffffff'),
+    Project('teamzeus_frontend_django', 'TZ-Frontend', '#71ede6', '#349691'),
+    Project('gridhub', 'Gridhub', '#000000', '#ffffff'),
+    Project('draq', 'Draq', '#000000', '#ffffff'),
+    Project('grello', 'Grello', '#000000', '#ffffff'),
+)
+
+
 class Column(object):
     def __init__(self, id, label, color, background_color):
         self.id = id
@@ -37,9 +59,6 @@ def getColumns():
     return columns
 
 
-PROJECTS=('erp', 'docker', 'bwt', 'backend', 'TeamZeus-Ansible', 'soap-bridge', 'teamzeus_frontend_django', 'gridhub', 'draq', 'grello')
-BACKGROUND_COLORS=('#6fd6ed', '#69e571', '#f453e7', '#f4383b', '#f7c53d', '#c95afc', '#d2f243', '#49f4b3', '#083887')
-COLORS=('#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#ffffff')
 
 IssueFields = ('id', 'title', 'body', 'repository', 'html_url', 'repository_url', 'state')
 class Issue(object):
@@ -47,16 +66,15 @@ class Issue(object):
         for k, v in values.iteritems():
             self.__dict__[k] = v
         self.set_repository()
-        self.set_colors()
+        self.set_project()
 
     def set_repository(self):
         self.repository = self.repository_url.split('/')[-1]
 
-    def set_colors(self):
-        for i in range(len(PROJECTS)):
-            if PROJECTS[i] == self.repository:
-                self.background_color = BACKGROUND_COLORS[i]
-                self.color = COLORS[i]
+    def set_project(self):
+        for project in PROJECTS:
+            if project.id == self.repository:
+                self.project = project
                 
 
 
@@ -115,10 +133,8 @@ def index():
     )
 
     projects = {}
-    for i in range(len(PROJECTS)-1):
-        projects[PROJECTS[i]] = (COLORS[i], BACKGROUND_COLORS[i])
 
-    return render_template('index.html', board=board, projects=projects)
+    return render_template('index.html', board=board, projects=PROJECTS)
 
 
 @app.route('/move_issue', methods=['GET', 'POST'])

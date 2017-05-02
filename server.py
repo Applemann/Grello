@@ -66,11 +66,11 @@ def loadAllIssues():
 
     redis_issues = []
     for column in getColumns():
-        redis_issues += redis.lrange(column, 0, -1)
+        redis_issues += redis.lrange(column.id, 0, -1)
 
     for issue in issues:
         if not str(issue['id']) in redis_issues:
-            redis.rpush(Columns.INBOX, str(issue['id']))
+            redis.rpush(Columns.INBOX.id, str(issue['id']))
             redis.hmset( str(issue['id']), {k: issue[k] for k in IssueFields} )
 
         
@@ -103,13 +103,13 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    column = lambda x: (x, getIssues(x))
+    column = lambda x: (x, getIssues(x.id))
     board = (
         column(Columns.INBOX),
         column(Columns.LOW_PRIORITY),
         column(Columns.LATER),
-        column(Columns.HIGH_PRIORITY),
         column(Columns.DOCKER),
+        column(Columns.HIGH_PRIORITY),
         column(Columns.IN_PROGRESS),
         column(Columns.DONE),
     )

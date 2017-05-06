@@ -1,0 +1,19 @@
+version: "3"
+services:
+  redis:
+    image: redis:latest
+    container_name: grello_redis
+
+  application:
+    image: teamzeus/grello:latest
+    container_name: grello
+    depends_on:
+       - redis
+    ports:
+       - "5000:5000"
+    links:
+        - redis:grello_redis
+    environment:
+       - FLASK_APP=server.py
+    volumes:
+       - ./token:/opt/project/token

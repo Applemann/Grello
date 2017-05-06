@@ -2,3 +2,4 @@ venv
 *.pyc
 api.doc
 token
+tmp/

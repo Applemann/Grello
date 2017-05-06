@@ -7,7 +7,7 @@ import utils
 from utils import get_token, for_print
 from redis import Redis
 
-redis = Redis()
+redis = Redis(host='localhost', port=6379, db=0)
 token = get_token()
 
 

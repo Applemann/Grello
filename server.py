@@ -7,7 +7,7 @@ import utils
 from utils import get_token, for_print
 from redis import Redis
 
-redis = Redis(host='localhost', port=6379, db=0)
+redis = Redis(host='drakeman.cz', port=6379, db=0)
 token = get_token()
 
 
@@ -77,6 +77,23 @@ class Issue(object):
                 self.project = project
                 
 
+def add_issues_if_not_exists(self, issues):
+    def add_issue(issue_id):
+        redis.rpush(Columns.INBOX.id, issue_id)
+        redis.hmset( issue_id, {k: issue[k] for k in IssueFields} )
+    add_issues = list(self)
+    map(lambda y : y in add_issues and add_issues.remove(y), issues)
+    for i in add_issues: add_issue(i)
+
+
+def remove_issues_if_not_exists(self, issues):
+    def remove_issue(issue_id):
+        for c in getColumns(): 
+            redis.lrem(c.id, issue_id)
+    remove_issues = list(issues)
+    map(lambda y : y in remove_issues and remove_issues.remove(y), self)
+    for i in remove_issues: remove_issue(i)
+
 
 def loadAllIssues():
     response = urllib2.urlopen('https://api.github.com/issues?access_token='+token)
@@ -86,12 +103,12 @@ def loadAllIssues():
     for column in getColumns():
         redis_issues += redis.lrange(column.id, 0, -1)
 
-    for issue in issues:
-        if not str(issue['id']) in redis_issues:
-            redis.rpush(Columns.INBOX.id, str(issue['id']))
-            redis.hmset( str(issue['id']), {k: issue[k] for k in IssueFields} )
+    
+    github_issues = map(lambda i : str(i['id']), issues)
 
-        
+    add_issues_if_not_exists(github_issues, redis_issues)
+    remove_issues_if_not_exists(redis_issues, github_issues)
+
     
 def getIssues(columnId):
     issues = []
@@ -104,23 +121,16 @@ def getIssues(columnId):
     return issues
 
 
-def removeClosedIssues():
-    issues = []
-    for column in getColumns():
-        issues = getIssues(column.id)
-        for issue in issues:
-            if issue.state == 'close':
-                redis.lrem(column, issue)
-
 
 
 #redis.flushdb()
-removeClosedIssues()
 loadAllIssues()
 app = Flask(__name__)
 
 @app.route('/')
 def index():
+    loadAllIssues()
+
     column = lambda x: (x, getIssues(x.id))
     board = (
         column(Columns.INBOX),

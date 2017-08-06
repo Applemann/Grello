@@ -1,8 +1,8 @@
 # Grello
-Grello is simple web application for visually github issues.
+Grello is simple web application for visualization github issues.
 
 
-# Local setup:
+## Local setup:
 
   Fork project from github and clone it:
   
@@ -37,14 +37,14 @@ export FLASK_APP=server.py && flask run --host=0.0.0.0
 ```
 
 
-# Special thanks:
+## Special thanks:
 
  - [Redis](https://redis.io/): In-memory data storage.
  - [Flask](http://flask.pocoo.org/): Python microframework.
 
 
 
-# Authors:
+## Authors:
 
  - Martin Jablečník
 

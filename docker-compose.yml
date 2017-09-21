@@ -5,7 +5,7 @@ services:
     container_name: grello_redis
 
   application:
-    image: teamzeus/grello:latest
+    image: applemann/grello:latest
     container_name: grello
     depends_on:
        - redis
